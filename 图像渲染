@@ -1,0 +1,27 @@
+class Solution {
+    public int[][] tmp = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        int oldColor = image[sr][sc]; // 记录下旧的颜色便于后面修改时的比较
+        int rowSize = image.length;
+        int colSize = image[0].length;
+        int[][] tag = new int[rowSize][colSize]; // 判断该位置是否被修改过颜色了
+        helper(image, tag, sr, sc, rowSize, colSize, newColor, oldColor);
+        return image;
+    }
+    public void helper(int[][] image, int[][] tag, int sr, int sc, 
+                        int rowSize, int colSize,  int newColor,  int oldColor) {
+        image[sr][sc] = newColor;
+        tag[sr][sc] = 1;
+        for (int i = 0; i < 4; i++) {
+            int newSr = sr + tmp[i][0]; // 计算该元素上下左右的坐标
+            int newSc = sc + tmp[i][1];
+            if (newSr >= rowSize || newSc >= colSize || newSr < 0 || newSc < 0) {
+                continue;
+            }
+            // 如果新坐标没有超出边界，并且颜色和旧颜色相同，则进行颜色修改
+            if (image[newSr][newSc] == oldColor && tag[newSr][newSc] == 0 ) {
+                helper(image, tag, newSr, newSc, rowSize, colSize, newColor, oldColor);
+            }
+        }
+    }
+}
