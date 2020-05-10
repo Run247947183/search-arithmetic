@@ -1,0 +1,58 @@
+class Solution {
+    public int[][] tag = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    public void solve(char[][] board) {
+        if (board.length == 0) {
+            return;
+        }
+        int rowSize = board.length;
+        int colSize = board[0].length;
+        // 遍历第一行和最后一行找到'O'位置开始搜索
+        for (int i = 0; i < colSize; i++) {
+            if (board[0][i] == 'O') {
+                change(board, rowSize, colSize, 0, i);
+            }
+            if (board[rowSize - 1][i] == 'O') {
+                change(board, rowSize, colSize, rowSize - 1, i);
+            }
+        }
+        // 遍历第一列和最后一列找到'O'位置开始搜索
+        for (int i = 0; i < rowSize; i++) {
+            if (board[i][0] == 'O') {
+                change(board, rowSize, colSize, i, 0);
+            }
+            if (board[i][colSize - 1] == 'O') {
+                change(board, rowSize, colSize, i, colSize - 1);
+            }
+        }
+        // 注意上述两个递归查找的范围不要写反了
+
+        // 开始遍历整个二维数组，还原 'O' 和改写不符合条件的 'O' 为 'X'
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+                if (board[i][j] == '*') {
+                    board[i][j] = 'O';
+                }
+            }
+        }
+    }
+    // 从二维数组的四边开始递归查找和 'O' 相连接的 'O'
+    // 并且修改他们的元素为 '*' ，以区别不符合条件的 'O'
+    public void change(char[][] board, int rowSize, int colSize, int sr, int sc) {
+        board[sr][sc] = '*';
+        for (int i = 0; i < 4; i++) {
+            // 获取该元素四周的坐标
+            int newSr = sr + tag[i][0];
+            int newSc = sc + tag[i][1];
+            // 排除不符合条件的坐标
+            if (newSr >= rowSize || newSc >= colSize || newSr < 0 || newSc < 0) {
+                continue;
+            }
+            if (board[newSr][newSc] != '*' && board[newSr][newSc] == 'O') {
+                change(board, rowSize, colSize, newSr, newSc);
+            }
+        }
+    }
+}
