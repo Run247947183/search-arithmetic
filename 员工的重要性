@@ -1,0 +1,30 @@
+/*
+// Definition for Employee.
+class Employee {
+    public int id;
+    public int importance;
+    public List<Integer> subordinates;
+};
+*/
+
+class Solution {
+    public int getImportance(List<Employee> employees, int id) {
+        HashMap<Integer, Employee> map = new HashMap<>();
+        // 将所有的员工数据结构加入 map 中，通过员工 id 来获取这个员工的数据结构
+        for (Employee e : employees) {
+            map.put(e.id, e);
+        }
+        // 递归
+        return helper(map, id);
+    }
+    public int helper(HashMap<Integer, Employee> map, int id) {
+        // 首先获取到当前员工的数据结构
+        Employee e = map.get(id);
+        // 将该员工的直系下属员工的重要性添加
+        // 接着继续递归下属员工，添加他们的重要性
+        for (int x : e.subordinates) {
+            e.importance += helper(map, x);
+        }
+        return e.importance;
+    }
+}
