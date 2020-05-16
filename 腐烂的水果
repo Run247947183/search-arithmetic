@@ -1,0 +1,58 @@
+class point {
+    public int row;
+    public int col;
+    public point(int row, int col) {
+        this.row = row;
+        this.col =col;
+    }
+}
+class Solution {
+    public int[][] tag = {{1, 0}, {0, 1}, {0, -1}, {-1, 0}};
+    public int orangesRotting(int[][] grid) {
+        Queue<point> queue = new LinkedList<>();
+        int rowSize = grid.length;
+        int colSize = grid[0].length;
+        // 将开始的时候已经腐烂的水果加入队列
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (grid[i][j] == 2) {
+                    queue.add(new point(i, j));
+                }
+            }
+        }
+        int count = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            boolean tmp = false; // 判断这一分钟是否有水果腐烂
+            while (size > 0) {
+                point p = queue.poll();
+                size--;
+                for (int i = 0; i < 4; i++) {
+                    int newRow = p.row + tag[i][0];
+                    int newCol = p.col + tag[i][1];
+                    if (newRow >= rowSize || newCol >= colSize 
+                    || newRow < 0 || newCol < 0) {
+                        continue;
+                    }
+                    if (grid[newRow][newCol] == 1) {
+                        grid[newRow][newCol] = 2; // 将水果设置为腐烂标志
+                        tmp = true;
+                        queue.add(new point(newRow, newCol));
+                    }
+                }
+            }
+            if (tmp) {
+                count++;// 这一分钟内没有腐烂则不需要加分钟数
+            }
+        }
+        // 最后重新判断一下 grid 里面是否还有没有腐烂的水果 
+        for (int i = 0; i < rowSize; i++) {
+            for (int j = 0; j < colSize; j++) {
+                if (grid[i][j] == 1) {
+                    return -1;
+                }
+            }
+        }
+        return count;
+    }
+}
