@@ -28,3 +28,35 @@ class Solution {
         return e.importance;
     }
 }
+
+// 方法二
+/*
+// Definition for Employee.
+class Employee {
+    public int id;
+    public int importance;
+    public List<Integer> subordinates;
+};
+*/
+
+class Solution {
+    public int getImportance(List<Employee> employees, int id) {
+        int count = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(id);
+        // 先将每个员工加入 Map 中，key 为id，value 为 Employee
+        HashMap<Integer, Employee> map = new HashMap<>();
+        for (Employee e : employees) {
+            map.put(e.id, e);
+        }
+        while (!queue.isEmpty()) {
+            int tmp = queue.poll();
+            count += map.get(tmp).importance;
+            // 遍历其下属员工，添加入 queue
+            for (int num : map.get(tmp).subordinates) {
+                queue.offer(num);
+            }
+        }
+        return count;
+    }
+}
