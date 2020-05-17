@@ -1,0 +1,25 @@
+class Solution {
+    public int numTilePossibilities(String tiles) {
+        HashSet<String> set = new HashSet<>(); // 记录总体的字符串不同个数
+        // 标记已经加入字符串的元素下标
+        ArrayList<Integer> list = new ArrayList<>();
+        StringBuilder curStr = new StringBuilder(); // 记录当前字符串
+        dfs(set, tiles, list, curStr);
+        return set.size();
+    }
+    public void dfs(HashSet<String> set, String tiles,
+    ArrayList<Integer> list, StringBuilder curStr) {
+        if (curStr != null && curStr.length() != 0 && !set.contains(curStr)) {
+            set.add(curStr.toString());
+        }
+        for (int i = 0; i < tiles.length(); i++) {
+            if (!list.contains(i)) {
+                list.add(i);
+                curStr.append(tiles.charAt(i));
+                dfs(set, tiles, list, curStr); // 回溯
+                list.remove(list.size() - 1); // 回溯结束
+                curStr.deleteCharAt(curStr.length() - 1);
+            }
+        }
+    }
+}
