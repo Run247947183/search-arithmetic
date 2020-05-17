@@ -1,0 +1,33 @@
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
+        int sum = 0;
+        dfs(res, list, sum, 0, target, candidates);
+        return res;
+    }
+    public void dfs(List<List<Integer>> res, List<Integer> list,
+    int sum, int pos, int target, int[] candidates) {
+        if (sum >= target) {
+            if (sum == target) {
+                // 注意：此处不能直接 res.add(list);
+                List<Integer> tmp = new ArrayList<>();
+                for (int a : list) {
+                    tmp.add(a);
+                }
+                res.add(tmp);
+            }
+            return;
+        }
+        // pos 记录当前元素下标，这样只往后面寻找，不往前面找
+        for (int i = pos; i < candidates.length; i++) {
+            if (candidates[i] > target) {
+                continue;
+            }
+            list.add(candidates[i]);
+            // 注意：此处不能 sum += candidates[i];
+            dfs(res, list, sum + candidates[i], i, target, candidates);
+            list.remove(list.size() - 1);
+        }
+    }
+}
