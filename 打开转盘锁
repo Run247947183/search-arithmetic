@@ -1,0 +1,58 @@
+class Solution {
+    public int openLock(String[] deadends, String target) {
+        HashSet<String> set = new HashSet<>();
+        for (String s : deadends) {
+            set.add(s);
+        }
+        // 如果 0000 在死亡数字里面，那么就不能解锁
+        if (set.contains("0000")) {
+            return -1;
+        }
+        HashSet<String> book = new HashSet<>(); // 记录已经转到的字符串
+        Queue<String> queue = new LinkedList<>();
+        queue.offer("0000");
+        book.add("0000");
+        int count = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size > 0) {
+                String cur = queue.poll();
+                size--;
+                if (cur.equals(target)) {
+                    return count;
+                }
+                // 从每个字符位置开始，向前转变字符，或者向后转变字符
+                for (int i = 0; i < 4; i++) {
+                    char chars1 = cur.charAt(i);
+                    char chars2 = cur.charAt(i);
+                    if (chars1 == '9') {
+                        chars1 = '0';
+                    } else {
+                        chars1++;
+                    }
+                    if (chars2 == '0') {
+                        chars2 = '9';
+                    } else {
+                        chars2--;
+                    }
+                    StringBuilder sb1 = new StringBuilder(cur);
+                    StringBuilder sb2 = new StringBuilder(cur);
+                    sb1.setCharAt(i, chars1);
+                    sb2.setCharAt(i, chars2);
+                    if (!book.contains(sb1.toString()) 
+                    && !set.contains(sb1.toString())) {
+                        queue.offer(sb1.toString());
+                        book.add(sb1.toString());
+                    }
+                    if (!book.contains(sb2.toString()) 
+                    && !set.contains(sb2.toString())) {
+                        queue.offer(sb2.toString());
+                        book.add(sb2.toString());
+                    }
+                }
+            }
+            count++;
+        }
+        return -1;
+    }
+}
