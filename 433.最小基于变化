@@ -1,0 +1,43 @@
+class Solution {
+    // BFS(广度优先搜索)
+    public int minMutation(String start, String end, String[] bank) {
+        if (bank.length == 0) {
+            return -1;
+        }
+        HashSet<String> set = new HashSet<>();
+        // 将基因库里的基因序列加入 set
+        for (String s1 : bank) {
+            set.add(s1);
+        }
+        HashSet<String> isChange = new HashSet<>(); // 判断是否已经变化过该基因序列了
+        isChange.add(start);
+        Queue<String> queue = new LinkedList<>(); // 将这一次基于变化的序列加入队列中
+        queue.offer(start);
+        char[] tag = {'A', 'C', 'G', 'T'};
+        int res = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            while (size > 0) {
+                size--;
+                String s = queue.poll();
+                for (int i = 0; i < s.length(); i++) {
+                    StringBuilder sb = new StringBuilder(s);
+                    for (int j = 0; j < 4; j++) {
+                        sb.setCharAt(i, tag[j]);
+                        String tmp = sb.toString();
+                        if (isChange.contains(tmp) || !set.contains(tmp)) {
+                            continue;
+                        }
+                        if (tmp.equals(end)) {
+                            return res + 1;
+                        }
+                        isChange.add(tmp);
+                        queue.offer(tmp);
+                    }
+                }
+            }
+            res++;
+        }
+        return -1;
+    }
+}
