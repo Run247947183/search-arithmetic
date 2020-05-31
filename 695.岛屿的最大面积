@@ -1,0 +1,32 @@
+class Solution {
+    // DFS深度优先搜索算法
+    public int[][] tag = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    public int maxAreaOfIsland(int[][] grid) {
+        int[][] books = new int[grid.length][grid[0].length]; // 用来标记已经计算过的下标位置
+        int res = 0; // 统计最大岛屿面积
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 1 && books[i][j] == 0) {
+                    res = Math.max(res, countMax(grid, i, j, books));
+                }
+            }
+        }
+        return res;
+    }
+    public int countMax(int[][] grid, int x, int y, int[][] books) {
+        int count = 1;
+        books[x][y] = 1; // 更新标记
+        for (int i = 0; i < 4; i++) {
+            int newX = x + tag[i][0];
+            int newY = y + tag[i][1];
+            // 过滤不符合条件的坐标
+            if (newX >= grid.length || newY >= grid[0].length || newY < 0 || newX < 0) {
+                continue;
+            }
+            if (grid[newX][newY] == 1 && books[newX][newY] == 0) {
+                count += countMax(grid, newX, newY, books);
+            }
+        }
+        return count;
+    }
+}
