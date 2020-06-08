@@ -1,0 +1,31 @@
+class Solution {
+    // 广度优先搜索算法
+    // 观察题目的特殊含义，二维数组的长度就为总共的人数，并且 i == j 时，一定为1
+    // 因为自己和自己肯定组成一个朋友圈，并且 M[0][1] == 1 和 M[1][0] == 1 是一样的
+    // 只需要判断这个几个人之间有哪些人组成一个共同的朋友圈即可
+    public int findCircleNum(int[][] M) {
+        int[] res = new int[M.length]; // 标记数组
+        Queue<Integer> queue = new LinkedList<>();
+        int count = 0;
+        for (int i = 0; i < M.length; i++) {
+            if (res[i] == 0) {
+                // res[i] == 0 表示还没有从这个起点往下搜索过
+                queue.offer(i);
+                while (!queue.isEmpty()) {
+                    int cur = queue.poll();
+                    // 每次有新人加入朋友圈，要把标记数组更改，否则会重复
+                    res[cur] = 1;
+                    for (int j = 0; j < M.length; j++) {
+                        if (M[cur][j] == 1 && res[j] == 0) {
+                            queue.offer(j);
+                        }
+                    }
+                }
+                // 注意次数要在 while 循环后 + 1
+                // 因为 while 循环内的查询结果都算是一个朋友圈的
+                count++;
+            }
+        }
+        return count;
+    }
+}
