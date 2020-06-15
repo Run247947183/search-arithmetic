@@ -1,0 +1,42 @@
+class Solution {
+    // 深度优先搜索算法
+    public int[][] tag = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    public boolean exist(char[][] board, String word) {
+        if (word == null || word.length() == 0) {
+            return false;
+        } 
+        boolean[][] books = new boolean[board.length][board[0].length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (dfs(board, word, books, i, j, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean dfs(char[][] board, String word, boolean[][] books,
+    int x, int y, int index) {
+        if (index == word.length() - 1) {
+            return word.charAt(index) == board[x][y];
+        }
+        if (board[x][y] == word.charAt(index)) {
+            books[x][y] = true;
+            for (int i = 0; i < 4; i++) {
+                int newX = x + tag[i][0];
+                int newY = y + tag[i][1];
+                if (newX >= board.length || newY >= board[0].length 
+                || newX < 0 || newY < 0) {
+                    continue;
+                }
+                if (!books[newX][newY]) {
+                    if (dfs(board, word, books, newX, newY, index + 1)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        books[x][y] = false;
+        return false;
+    }
+}
