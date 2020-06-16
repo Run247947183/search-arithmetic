@@ -1,0 +1,40 @@
+class Solution {
+    // 深度优先搜索算法
+    public int[][] tag = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}, {1, -1}, {-1, 1}, {1, 1}, {-1, -1}};
+    public int[] pondSizes(int[][] land) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < land.length; i++) {
+            for (int j = 0; j < land[0].length; j++) {
+                if (land[i][j] == 0) {
+                    int count = dfs(land, i, j);
+                    list.add(count);
+                }
+            }
+        }
+        int[] arr = new int[list.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = list.get(i);
+        }
+        Arrays.sort(arr);
+        return arr;
+    }
+    public int dfs(int[][] land, int x, int y) {
+        int count = 0;
+        count++;
+        // 防止重复计算
+        land[x][y] = -1;
+        for (int i = 0; i < 8; i++) {
+            // 下标更新，遍历周围的元素
+            int newX = x + tag[i][0];
+            int newY = y + tag[i][1];
+            if (newX >= land.length || newY >= land[0].length 
+            || newX < 0 || newY < 0) {
+                continue;
+            }
+            if (land[newX][newY] == 0) {
+                count += dfs(land, newX, newY);
+            }
+        }
+        return count;
+    }
+}
