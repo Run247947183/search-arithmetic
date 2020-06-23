@@ -1,0 +1,54 @@
+class Solution {
+    public int[][] pos = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    public int closedIsland(int[][] grid) {
+        // books 用来判断该位置是否判断过了
+        int[][] books = new int[grid.length][grid[0].length];
+        int yLen = grid.length;
+        int xLen = grid[0].length;
+        // 遍历第一行和最后一行
+        for (int i = 0; i < xLen; i++) {
+            if (grid[0][i] == 0 && books[0][i] == 0) {
+                dfs(grid, books, 0, i);
+            }
+            if (grid[yLen - 1][i] == 0 && books[yLen - 1][i] == 0) {
+                dfs(grid, books, yLen - 1, i);
+            }
+        }
+        // 遍历第一列和最后一列
+        for (int i = 0; i < yLen; i++) {
+            if (grid[i][0] == 0 && books[i][0] == 0) {
+                dfs(grid, books, i, 0);
+            }
+            if (grid[i][xLen - 1] == 0 && grid[i][xLen - 1] == 0) {
+                dfs(grid, books, i, xLen - 1);
+            }
+        }
+        // 开始计算被海包围的岛屿数量
+        int count = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j] == 0 && books[i][j] == 0) {
+                    dfs(grid, books, i, j);
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    public void dfs(int[][] grid, int[][] books, int x, int y) {
+        // 将 (x, y) 位置以及和他相连的岛屿全部计算，并且更新 books 
+        // 表示已经计算过了
+        books[x][y] = 1;
+        for (int i = 0; i < 4; i++) {
+            int newX = x + pos[i][0];
+            int newY = y + pos[i][1];
+            if (newX < 0 || newY < 0 || 
+            newX >= grid.length || newY >= grid[0].length) {
+                continue;
+            }
+            if (grid[newX][newY] == 0 && books[newX][newY] == 0) {
+                dfs(grid, books, newX, newY);
+            }
+        }
+    }
+}
