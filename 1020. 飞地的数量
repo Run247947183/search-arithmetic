@@ -1,0 +1,47 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    public int[][] pos = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    public int numEnclaves(int[][] A) {
+        int[][] books = new int[A.length][A[0].length];
+        int count = 0;
+        for (int i = 0; i < A[0].length; i++) {
+            if (A[0][i] == 1 && books[0][i] == 0) {
+                dfs(A, books, 0, i);
+            }
+            if (A[A.length - 1][i] == 1 && books[A.length - 1][i] == 0) {
+                dfs(A, books, A.length - 1, i);
+            }
+        }
+        for (int i = 0; i < A.length; i++) {
+            if (A[i][0] == 1 && books[i][0] == 0) {
+                dfs(A, books, i, 0);
+            }
+            if (A[i][A[0].length - 1] == 1 && books[i][A[0].length - 1] == 0) {
+                dfs(A, books, i, A[0].length - 1);
+            }
+        }
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < A[0].length; j++) {
+                if (A[i][j] == 1 && books[i][j] == 0) {
+                    books[i][j] = 1;
+                    count++;
+                }
+            } 
+        }
+        return count;
+    }
+    public void dfs(int[][] A, int[][] books, int x, int y) {
+        books[x][y] = 1;
+        for (int i = 0; i < 4; i++) {
+            int newX = x + pos[i][0];
+            int newY = y + pos[i][1];
+            if (newX >= A.length || newY >= A[0].length || newX < 0 || newY < 0) {
+                continue;
+            }
+            if (A[newX][newY] == 1 && books[newX][newY] == 0) {
+                dfs(A, books, newX, newY);
+            }
+        }
+    }
+}
