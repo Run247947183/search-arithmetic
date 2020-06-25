@@ -1,0 +1,50 @@
+# search-arithmetic
+搜索算法
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    // 深度优先搜索+递归
+    // 从后序遍历来对二叉树进行修改
+    // 先遍历到根节点的最左子树和最右子树，边修改节点，边添加
+    // 如果当前节点 root.val 包含在 to_delete 中，那么就将它的左右子树添加到 List 中
+    // 并且返回 null,表示它的父节点对这个 root 节点引用为 null
+    // 最终遍历回根节点，也需要再次判断是否为 null，并且添加
+    public Set<Integer> set = new HashSet<>();
+    public List<TreeNode> list = new ArrayList<>();
+    public List<TreeNode> delNodes(TreeNode root, int[] to_delete) {
+        for (int num :to_delete) {
+            set.add(num);
+        }
+        root = helper(root);
+        if (root != null) {
+            list.add(root);
+        }
+        return list;
+    }
+    public TreeNode helper(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        // 修改当前节点左右子树中的值，如果包含在to_delete中，则就不要这个节点，返回null
+        root.left = helper(root.left);
+        root.right = helper(root.right);
+        if (set.contains(root.val)) {
+            // 添加其左右节点
+            if (root.left != null) {
+                list.add(root.left);
+            }
+            if (root.right != null) {
+                list.add(root.right);
+            }
+            return null;
+        }
+        return root;
+    }
+}
