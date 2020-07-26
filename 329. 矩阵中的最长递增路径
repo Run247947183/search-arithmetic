@@ -1,0 +1,40 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 记忆化深度优先搜索
+    // 因为可能会有重复的深度计算，所以进行记忆化升级，减去不必要的计算
+    public int longestIncreasingPath(int[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        books = new int[matrix.length][matrix[0].length];
+        int max = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                max = Math.max(max, dfs(matrix, i, j));
+            }
+        }
+        return max;
+    }
+    public int[][] books;
+    public int[][] pos = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    public int dfs(int[][] matrix, int y, int x) {
+        if (books[y][x] != 0) {
+            // 之前计算过该位置四周的最长递增路径，则直接返回
+            return books[y][x];
+        }
+        books[y][x]++;
+        for (int i = 0; i < 4; i++) {
+            int newX = x + pos[i][0];
+            int newY = y + pos[i][1];
+            if (newX >= matrix[0].length || newY >= matrix.length || newX < 0 || newY < 0) {
+                continue;
+            }
+            if (matrix[newY][newX] <= matrix[y][x]) {
+                continue;
+            }
+            books[y][x] = Math.max(books[y][x], dfs(matrix, newY, newX) + 1);
+        }
+        return books[y][x];
+    }
+}
