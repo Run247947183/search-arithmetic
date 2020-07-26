@@ -1,0 +1,71 @@
+# search-arithmetic
+搜索算法
+class Point {
+    public int col = 0;
+    public int row = 0;
+    public Point(int col, int row) {
+        this.col = col;
+        this.row = row;
+    }
+}
+class Solution {
+    // DFS(深度优先搜索算法) + 回溯
+    public List<List<String>> solveNQueens(int n) {
+        dfs(n, 0);
+        helper(n);
+        return result;
+    }
+    public List<List<Point>> res = new ArrayList<>(); // 所有合适方案
+    public List<Point> list = new ArrayList<>(); // 某一种合适的方案
+    public void dfs(int n, int row) {
+        if (row == n) {
+            // 满足条件了，添加这种皇后的放置方案
+            List<Point> tmp = new ArrayList<>();
+            for (Point p : list) {
+                tmp.add(p);
+            }
+            res.add(tmp);
+            return;
+        }
+        // 每一行进行皇后位置的选择，col 表示当前行（row）中的第 col 列
+        // 当前皇后的位置就为 (row, col)
+        for (int col = 0; col < n; col++) {
+            if (isSuitable(row, col)) {
+                list.add(new Point(col, row));
+                dfs(n, row + 1);
+                list.remove(list.size() - 1);
+            }
+        }
+    }
+    // 判断当前位置的皇后是否和之前的皇后有冲突
+    public boolean isSuitable(int row, int col) {
+        for (Point p : list) {
+            if (p.col == col || (p.row + p.col == row + col) || (row - col == p.row - p.col)) {
+                return false;
+            } 
+        }
+        return true;
+    }
+    public List<List<String>> result = new ArrayList<>(); // 最终结果
+    // 将之前保存的答案转换形式
+    public void helper(int n) {
+        for (List<Point> tmp : res) {
+            List<StringBuilder> one = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < n; j++) {
+                    sb.append(".");
+                }
+                one.add(sb);
+            }
+            for (Point p : tmp) {
+                one.get(p.row).setCharAt(p.col, 'Q');
+            }
+            List<String> anser = new ArrayList<>();
+            for (StringBuilder s : one) {
+                anser.add(s.toString());
+            }
+            result.add(anser);
+        }
+    }
+}
