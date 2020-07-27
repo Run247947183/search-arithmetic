@@ -1,0 +1,31 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 回溯
+    private Map<Character, Boolean> res = new HashMap<>();
+    public int maxLength(List<String> arr) {
+        dfs(arr, 0, new HashMap<>());
+        return res.size();
+    }
+    public Map<Character, Boolean> dfs(List<String> arr, int pos, Map<Character, Boolean> parentMap) {
+        if (pos >= arr.size()) {
+            return parentMap;
+        }
+        for (int i = pos; i < arr.size(); i++) {
+            String s = arr.get(i);
+            Map<Character, Boolean> curMap = new HashMap<>();
+            for (Character c : s.toCharArray()) {
+                curMap.put(c, true);
+            }
+            if (s.length() == curMap.size()) {
+                Map<Character,Boolean> linkedMap = new HashMap<>(parentMap);
+                linkedMap.putAll(curMap);
+                if (linkedMap.size() == curMap.size() + parentMap.size()) {
+                    Map<Character,Boolean> map = dfs(arr, i+1, linkedMap);
+                    res = map.size() > res.size() ? map : res;
+                }
+            }
+        }
+        return parentMap;
+    }
+}
