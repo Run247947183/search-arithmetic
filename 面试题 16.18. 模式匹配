@@ -1,0 +1,40 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 回溯算法
+    public boolean patternMatching(String pattern, String value) {
+        String[] str = new String[2]; // 表明代表 a 和 b 的两种字符串
+        return dfs(str, pattern, value, 0, 0);
+    }
+    public boolean dfs(String[] str, String pattern, String value, int index1, int index2) {
+        if (index1 == pattern.length() && index2 == value.length()) {
+            return true;
+        }
+        if (index1 >= pattern.length() || index2 > value.length()) {
+            return false;
+        }
+        // 判断当前 pattern 位置是 a 还是 b 字符串
+        int pos = pattern.charAt(index1) - 'a';
+        if (str[pos] == null) {
+            for (int i = index2; i <= value.length(); i++) {
+                str[pos] = value.substring(index2, i);
+                // str[pos^1]表示另一种模式的字符串，如果a和b所代表的字符串相同，则返回 false
+                if (!str[pos].equals(str[pos ^ 1]) 
+                && dfs(str,pattern,value,index1 + 1, i)) {
+                    return true;
+                }
+            }
+            str[pos] = null;
+            return false;
+        } else {
+            // 表明 str[pos] 这种字符串之前已经存在了
+            // 现在要判断 value 中是不是还是和 str[pos] 匹配上相同字符串
+            int end = str[pos].length() + index2;
+            if (end > value.length() 
+            || !value.substring(index2,end).equals(str[pos])) {
+                return false;
+            }
+            return dfs(str, pattern, value, index1 + 1, end);
+        }
+    }
+}
