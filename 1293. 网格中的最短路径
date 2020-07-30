@@ -1,0 +1,76 @@
+# search-arithmetic
+搜索算法
+
+class Point {
+    // Point 表示二维数组中一个位置的横纵坐标，oneCount表示 1 障碍物的个数
+    public int x = 0;
+    public int y = 0;
+    public int oneCount = 0;
+    public Point(int x, int y, int oneCount) {
+        this.x = x;
+        this.y = y;
+        this.oneCount = oneCount;
+    }
+}
+class Solution {
+    // 贪心算法 + 广度优先搜索算法
+    public int shortestPath(int[][] grid, int k) {
+        int row = grid.length;
+        int col = grid[0].length;
+        if (row < 1 || col < 1 || row > 40 || col > 40 || row * col < k || k <1) {
+            return -1;
+        }
+        if (row == 1 && col == 1) {
+            return 0;
+        }
+        int res = 0; // 最少步数
+        Queue<Point> queue = new LinkedList<>();
+        queue.add(new Point(0, 0, 0));
+        // arr 表示走到 (row,col) 位置，还剩下 k - oneCount 次消除障碍物的个数
+        // 贪心算法体现在此，每次寻找当前 arr[i][j] 最大的，也就是剩下次数最多的
+        // 这样后面如果遇到障碍物就有更多更好的选择，可以消除障碍物
+        int[][] arr = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            // 全部填充为 -1，表示此处没有到达过
+            Arrays.fill(arr[i], -1);
+        }
+        arr[0][0] = k;
+        int[][] pos = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            res++;
+            for (int i = 0; i < size; i++) {
+                Point p = queue.poll();
+                for (int j = 0; j < 4; j++) {
+                    int newX = p.x + pos[j][0];
+                    int newY = p.y + pos[j][1];
+                    if (newX<0||newY<0||newX>=col||newY>=row) {
+                        continue;
+                    }
+                    if (newX == col - 1 && newY == row - 1) {
+                        return res;
+                    }
+                    int newCount = p.oneCount;
+                    if (grid[newY][newX] == 1) {
+                        // 当前位置是障碍物，已经没有消除次数了，所以走不通
+                        if (p.oneCount >= k) {
+                            continue;
+                        }
+                        // 否则将遇到的障碍物的次数+1，以便于下次和 k 判断大小
+                        newCount++;
+                    }
+                    if (arr[newY][newX] != -1&&arr[newY][newX] >= k - newCount) {
+                        // 表示该位置之前走过，并且之前的走法能在遇到更少的障碍物
+                        // 这样为后面争取更多的机会
+                        continue;
+                    } else {
+                        // 表示没有走过该位置，或者当前走法是更好的选择
+                        arr[newY][newX] = k - newCount;
+                    }
+                    queue.add(new Point(newX, newY, newCount));
+                }
+            }
+        }
+        return -1;
+    }
+}
