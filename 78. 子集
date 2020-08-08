@@ -1,0 +1,31 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 深度优先搜索算法
+    // 不同点：通过一个 num 来判断当前 list 中的元素个数是不是满足 num 要求
+    // 满足的话加入 res 结果中
+    // num 从 1 到 nums 的长度为止
+    // 也就是先加只有 1 种元素的情况，再加只有 2 种....一直到 nums 长度
+    public List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> subsets(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return res;
+        }
+        List<Integer> list = new ArrayList<>();
+        for (int i = 1; i <= nums.length; i++) {
+            dfs(nums, i, list, 0);
+        }
+        res.add(new ArrayList<>());
+        return res;
+    }
+    public void dfs(int[] nums, int num, List<Integer> list, int pos) {
+        if (list.size() == num) {
+            res.add(new ArrayList<>(list));
+        }
+        for (int i = pos; i < nums.length; i++) {
+            list.add(nums[i]);
+            dfs(nums, num, list, i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+}
