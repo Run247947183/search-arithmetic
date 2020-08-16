@@ -1,0 +1,40 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 深度优先搜索算法
+    // 注意：体会减枝
+    public List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        if (candidates == null || candidates.length == 0) {
+            return res;
+        }
+        // 先排序十分重要
+        Arrays.sort(candidates);
+        List<Integer> list = new ArrayList<>();
+        dfs(candidates, list, 0, target, 0);
+        return res;
+    }
+    public void dfs(int[] arr, List<Integer> list, int pos, int target, int count) {
+        if (count >= target) {
+            if (count == target) {
+                res.add(new ArrayList<>(list));
+            }
+            return;
+        }
+        for (int i = pos; i < arr.length; i++) {
+            // 大剪枝，因为数组是排序的，所以再往后就一定比 target 大，无需进行计算
+            if (count + arr[i] > target) {
+                break;
+            }
+            // 小剪枝，注意：这里是 i > pos，不是 i > 0
+            // 只有当前第一个节点已经计算过了，然后往前遍历遇到相同的元素
+            // 此时才能减枝，如果没有这一步，则会出现重复的组合
+            if (i > pos && arr[i - 1] == arr[i]) {
+                continue;
+            }
+            list.add(arr[i]);
+            dfs(arr, list, i + 1, target, count + arr[i]);
+            list.remove(list.size() - 1);
+        }
+    }
+}
