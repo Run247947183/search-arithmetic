@@ -1,0 +1,47 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 深度优先搜索
+    // 按照规则，第一：如果点击的位置为 'M' 则直接修改为 'X'，游戏结束
+    // 第二：点击位置为'E'则进行周边八个位置的判断，计算出'M'地雷的个数
+    // 如果地雷个数为 0,则该位置修改为'B'，然后再次遍历周围八个位置，继续往'E'的位置递归
+    // 如果地雷个数大于 0，则修改该位置为地雷的个数，结束递归的过程
+    public int[][] pos = {{1,0},{0,1},{-1,0},{0,-1},{1,1},{-1,-1},{1,-1},{-1,1}};
+    public char[][] updateBoard(char[][] board, int[] click) {
+        int y = click[0];
+        int x = click[1];
+        if (board[y][x] == 'M') {
+            board[y][x] = 'X';
+        } else {
+            dfs(board, x, y);
+        }
+        return board;
+    }
+    public void dfs(char[][] board, int x, int y) {
+        int count = 0;
+        for(int i = 0; i < 8; i++) {
+            int col = x + pos[i][0];
+            int row = y + pos[i][1];
+            if (row >= board.length||col >= board[0].length||col < 0||row < 0) {
+                continue;
+            }
+            if (board[row][col] == 'M') {
+                count++;
+            }
+        }
+        if (count > 0) {
+            board[y][x] = (char)(count + '0');
+        } else {
+            board[y][x] = 'B';
+            for (int i = 0; i < 8; i++) {
+                int col = x + pos[i][0];
+                int row = y + pos[i][1];
+                if (row >= board.length||col >= board[0].length
+                ||col < 0||row < 0||board[row][col] != 'E') {
+                    continue;
+                }
+                dfs(board, col, row);
+            }
+        }
+    }
+}
