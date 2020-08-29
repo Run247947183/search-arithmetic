@@ -1,0 +1,49 @@
+# search-arithmetic
+搜索算法
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    // 回溯 + 深度优先搜索 + HashMap
+    // Map 中保存的是之前节点的和
+    public int pathSum(TreeNode root, int sum) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1); // 如果一个节点值刚好为 sum，则 count - sum == 0
+        return dfs(root, sum, 0, map);
+    }
+    public int dfs(TreeNode root, int sum, int count, Map<Integer, Integer> map) {
+        if (root == null) {
+            return 0;
+        }
+        // res 表示本次出现和为 sum 的个数
+        int res = 0;
+        count += root.val;
+        // 注意：此处为最重要的地方
+        // count - sum 得出的结果如果在 map 中存在
+        // 表示存在某条路径的和为 sum
+        res += map.getOrDefault(count - sum, 0);
+        // 将当前节点的值加入 map 中
+        map.put(count, map.getOrDefault(count, 0) + 1);
+
+        // 分别在左右子树中继续寻找
+        res += dfs(root.left, sum, count, map);
+        res += dfs(root.right, sum, count, map);
+        
+        // 将到本节点为止的节点和 count 的次数减 1
+        // 因为要回溯的回到上个节点，从上个节点的右子树去寻找
+        map.put(count, map.get(count) - 1);
+        return res;
+    }
+}
