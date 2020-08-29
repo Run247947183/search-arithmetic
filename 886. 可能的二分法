@@ -1,0 +1,60 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    public List<Integer>[] res; // res[i] 表示储存第 i 个人不喜欢的人的编号
+    // map表示已经遍历过的人，boolean为true的人一组，为 false 的人一组
+    // 每一组里的人都不能不喜欢组里的其他人，否则不能分成两组，返回 false
+    public Map<Integer, Boolean> map;
+    public boolean possibleBipartition(int N, int[][] dislikes) {
+        if (N == 0 || dislikes == null || dislikes.length == 0) {
+            return true;
+        }
+        // 进行初始化
+        res = new ArrayList[N + 1];
+        for (int i = 0; i <= N; i++) {
+            res[i] = new ArrayList<>();
+        }
+        // 将每一个人不喜欢的其他人储存
+        for (int[] tmp : dislikes) {
+            res[tmp[0]].add(tmp[1]);
+            res[tmp[1]].add(tmp[0]);
+        }
+        map = new HashMap<>();
+        // 开始遍历判断
+        for (int i = 1; i <= N; i++) {
+            // 没有遍历过的
+            if (!map.containsKey(i)) {
+                boolean tag = dfs(i, true);
+                if (!tag) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public boolean dfs(int people, boolean cur) {
+        if (map.containsKey(people)) {
+            // 这个人之前已经遍历记录到 map 中了
+            boolean tmp = map.get(people);
+            // 判断两个人是不是一组的
+            if (tmp && cur) {
+                return true;
+            }
+            if (!tmp && !cur) {
+                return true;
+            }
+            // 不是的话直接返回 false
+            return false;
+        }
+        // 记录到 map 中
+        map.put(people, cur);
+        // 判断这个人的不喜欢列表中，是不是有同一组的，如果有直接返回 false
+        for (int other : res[people]) {
+            boolean tag = dfs(other, !cur);
+            if (!tag) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
