@@ -1,0 +1,38 @@
+# search-arithmetic
+搜索算法
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<List<Integer>> res = new ArrayList<>();
+    public List<List<Integer>> pathSum(TreeNode root, int sum) {
+        dfs(root, sum, 0, new ArrayList<>());
+        return res;
+    }
+    public void dfs(TreeNode root, int sum, int count, List<Integer> list) {
+        if (root == null) {
+            return;
+        } 
+        if (root.left == null && root.right == null) {
+            if (count + root.val == sum) {
+                // 注意此处不能 list.add(root.val)
+                // 否则后序remove的时候，会少删除一个，则造成错误
+                List<Integer> tmp = new ArrayList<>(list);
+                tmp.add(root.val);
+                res.add(tmp);
+            }
+            return;
+        }
+        list.add(root.val);
+        count += root.val;
+        dfs(root.left, sum, count, list);
+        dfs(root.right, sum, count, list);
+        list.remove(list.size() - 1);
+    }
+}
