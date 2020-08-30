@@ -1,0 +1,33 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 深度优先搜索算法
+    // 此处的难点在于按照字符串的最小序列进行排序
+    // 通过 HashMap 来解决，将出发的机场地点作为 key
+    // value 为优先级队列，队列里面保存该出发地点对应的降落机场地点，这样就能对降落的机场进行排序，然后从字符串序列小的选择
+    public Map<String, PriorityQueue<String>> map = new HashMap<>();
+    public List<String> list = new ArrayList<>(); // 保存最终结果
+    public List<String> findItinerary(List<List<String>> tickets) {
+        if (tickets == null || tickets.size() == 0) {
+            return list;
+        }
+        for (List<String> tmp : tickets) {
+            String s = tmp.get(0);
+            if (!map.containsKey(s)) {
+                map.put(s, new PriorityQueue<String>());
+            }
+            map.get(s).add(tmp.get(1));
+        }
+        dfs("JFK");
+        // 注意：因为dfs搜索时是从最后往前添加，所以要将 List 倒过来
+        Collections.reverse(list);
+        return list;
+    }
+    public void dfs(String s) {
+        // 直到该key的队列中没有降落地点
+        while (map.containsKey(s) && map.get(s).size() > 0) {
+            dfs(map.get(s).poll());
+        }
+        list.add(s);
+    }
+}
