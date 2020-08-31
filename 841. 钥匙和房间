@@ -1,0 +1,23 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 深度优先搜索算法 + 回溯
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        if (rooms == null || rooms.size() == 0) {
+            return true;
+        }
+        int[] books = new int[rooms.size()];
+        dfs(rooms, books, 0);
+        return rooms.size() == count;
+    }
+    public int count = 0;
+    public void dfs(List<List<Integer>> rooms, int[] books, int pos) {
+        count++;
+        books[pos] = -1;
+        for (Integer num : rooms.get(pos)) {
+            if (books[num] == 0) {
+                dfs(rooms, books, num);
+            }
+        }
+    }
+}
