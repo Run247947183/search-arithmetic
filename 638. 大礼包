@@ -1,0 +1,41 @@
+# search-arithmetic
+搜索算法
+class Solution {
+    // 深度优先搜索算法 + 递归
+    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        return dfs(price, special, needs);
+    }
+    public int dfs(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        // res 表示不使用礼包所需要花费的钱
+        int res = helper(price, needs);
+        // 开始尝试使用礼包
+        for (List<Integer> list : special) {
+            List<Integer> tmp = new ArrayList<>(needs);
+            int i = 0;
+            for (; i < needs.size(); i++) {
+                int num = tmp.get(i) - list.get(i);
+                // 注意：如果出现礼包的商品数量大于对应needs的数量，则不能使用礼包
+                if (num < 0) {
+                    break;
+                }
+                // 将还没有购买的商品设置入 tmp
+                tmp.set(i, num);
+            }
+            if (i == needs.size()) {
+                // 表示当前礼包可以使用，则需要判断最小花费的钱
+                // 则直接递归去寻找剩余商品所需要的最小花费
+                // list.get(i) 表示当前礼包的花费
+                res = Math.min(res, list.get(i) + dfs(price, special, tmp));
+            }
+        }
+        return res;
+    }
+    // 计算不用礼包购买所有商品所需要的钱
+    public int helper(List<Integer> price, List<Integer> needs) {
+        int sum = 0;
+        for (int i = 0; i < price.size(); i++) {
+            sum += needs.get(i) * price.get(i);
+        }
+        return sum;
+    }
+}
